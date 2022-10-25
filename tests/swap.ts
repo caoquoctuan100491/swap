@@ -14,22 +14,21 @@ describe("swap", () => {
   const connection = new Connection(clusterApiUrl("devnet"), 'recent');
   let ctx: Ctx;
 
-  // it("Initializes!", async () => {
-  //   ctx = await createCtx(connection, program);
-  //   await RPC.initialize(ctx);
-  //   await CheckCtx.poolInitialState(ctx);
-  // });
+  it("Initializes!", async () => {
+    ctx = await createCtx(connection, program);
+    await RPC.initialize(ctx);
+  });
 
-  // it("Swap tokens from the program", async () => {
-  //   // ctx = await createCtx(connection, program);
-  //   const amount = new anchor.BN(1 * 1e6);
-  //   await RPC.swapTokens(ctx, ctx.user.signer, amount);
-  // });
-
-  it("Only swap", async () => {
+  it("Swap tokens from the program", async () => {
+    // ctx = await createCtx(connection, program);
     const amount = new anchor.BN(1 * 1e6);
+    await RPC.swapTokens(ctx, ctx.user.signer, amount);
+    // Swap("4v8TYXZg9sAyt8sPhgWi2umwQQ5fUXRvcNrm6dat4KKo",amount);
+  });
 
-    const mintPublicKey = new PublicKey("4v8TYXZg9sAyt8sPhgWi2umwQQ5fUXRvcNrm6dat4KKo");
+  async function Swap(mint_address,amount) {
+
+    const mintPublicKey = new PublicKey(mint_address);
     const mint = await getMint(connection, mintPublicKey);
 
     const [poolPDA, poolBump] = await anchor.web3.PublicKey.findProgramAddress(
@@ -65,7 +64,7 @@ describe("swap", () => {
       tokenProgram: TOKEN_PROGRAM_ID,
     }).signers([user]).rpc();
     console.log("transaction: " + tx);
-  });
+  }
 });
 
 
