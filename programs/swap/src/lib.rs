@@ -6,11 +6,10 @@ mod currency; use currency::{Lamports, Tokens};
 
 mod account;
 mod types;
-mod initialize;pub use initialize::*;
 mod helper; use helper::send_lamports;
 mod error; use error::ErrorCode;
 
-declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
+declare_id!("6g7FMSAAjJK33JADSprJwaDwL5FPuyqRfqv6ekPKCdDz");
 
 #[program]
 pub mod swap {
@@ -18,15 +17,15 @@ pub mod swap {
 
     pub fn initialize(
         ctx: Context<Initialize>,
+        token_price: u64,
         amount: Tokens,
     ) -> Result<()> {
-        let tokens_for_vault = Tokens::new(ctx.accounts.tokens_for_distribution.amount);
-        require!(amount <= tokens_for_vault, ErrorCode::NotEnoughTokens);
         let pool_account = &mut ctx.accounts.pool_account;
         pool_account.bump = *ctx.bumps.get("pool_account").expect("pool_account bump exists");
         pool_account.owner = ctx.accounts.distribution_authority.key();
         pool_account.token_mint = ctx.accounts.token_mint.key();
         pool_account.vault = ctx.accounts.vault.key();
+        pool_account.token_price = token_price;
 
         ctx.accounts.send_tokens_to_pool(amount)
     }

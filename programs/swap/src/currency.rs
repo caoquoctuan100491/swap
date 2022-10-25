@@ -92,12 +92,12 @@ impl SubAssign for Lamports {
 
 impl PoolAccount {
     pub fn try_tokens_to_lamports(&self, tokens: Tokens) -> Option<Lamports> {
-        let lamports_amount = u64::from(tokens.clone()).checked_mul(10);
+        let lamports_amount = u64::from(tokens.clone()).checked_mul(self.token_price as u64);
         lamports_amount.map(|lamports_amount| Lamports::new(lamports_amount))
     }
 
     pub fn try_lamports_to_tokens(&self, lamports: Lamports) -> Option<Tokens> {
-        let tokens_amount = u64::from(lamports).checked_div(10);
+        let tokens_amount = u64::from(lamports).checked_div(self.token_price as u64);
         tokens_amount.map(|tokens_amount| Tokens::new(tokens_amount))
     }
 }

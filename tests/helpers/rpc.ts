@@ -10,7 +10,8 @@ import { Ctx } from "./ctx";
 
 export namespace RPC {
     export async function initialize(ctx: Ctx) {
-        await ctx.program.methods.initialize(
+        let tx = await ctx.program.methods.initialize(
+            ctx.initialTokenPrice,
             { tokens: ctx.amountToVault },
         ).accounts({
             poolAccount: ctx.accounts.pool.key,
@@ -22,11 +23,12 @@ export namespace RPC {
             tokenProgram: TOKEN_PROGRAM_ID,
             associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
         }).signers([ctx.owner]).rpc();
+        console.log("transaction: " + tx);
     }
 
     export async function swapTokens(ctx: Ctx, trader: Signer, tokensAmount: anchor.BN) {
         const ata = await getOrCreateAssociatedTokenAccount(ctx.connection, trader, ctx.token_mint, trader.publicKey);
-        await ctx.program.methods.swapToken(
+        let tx = await ctx.program.methods.swapToken(
             { tokens: tokensAmount },
         ).accounts({
             poolAccount: ctx.accounts.pool.key,
@@ -36,8 +38,8 @@ export namespace RPC {
             userTokenAccount: ata.address,
             systemProgram: SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
-            clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
         }).signers([trader]).rpc();
+        console.log("transaction: " + tx);
     }
 
     export async function withdrawLamports(ctx: Ctx) {

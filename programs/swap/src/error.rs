@@ -8,6 +8,4 @@ pub enum ErrorCode {
     UserNotHaveEnoughTokens,
     #[msg("not enough tokens in vault to complete the swap")]
     NotEnoughTokensInVault,
-    #[msg("not enough tokens")]
-    NotEnoughTokens,
 }
